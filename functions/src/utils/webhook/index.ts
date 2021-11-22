@@ -10,7 +10,7 @@ interface GetStatusWebhook{
     result: object
 }
 
-export async function configWebhook(req:any , res:any, telegramBotToken) {
+export async function configWebhook(req:any , res:any, telegramBotToken: string) {
     
     const setResponse = await axios.get<SetWebhook>(`https://api.telegram.org/bot${telegramBotToken}/setWebHook?url=${req.body.url}/`);
 

@@ -1,40 +1,23 @@
-import { Composer, Context, Scenes, session, Telegraf } from 'telegraf'
+import { Composer, Scenes, session, Telegraf } from 'telegraf'
+import { MovementContext } from '../interfaces/movements'
 import { sheetService }  from '../utils/sheets/index'
 
-interface MyWizardSession extends Scenes.WizardSessionData {
-    // will be available under `ctx.scene.session.myWizardSessionProp`
-    myWizardSessionProp: number
-}
+export function setupMovements(bot: Telegraf<MovementContext>){
 
-interface MyContext extends Context {
-    // will be available under `ctx.myContextProp`
-    myContextProp: string
-    
-    // declare scene type
-    scene: Scenes.SceneContextScene<MyContext, MyWizardSession>
-    // declare wizard type
-    wizard: Scenes.WizardContextWizard<MyContext>
-    
-}
+    let expense = { name: 'name', value: 'value' }
 
-export function setupMovements(bot: Telegraf<MyContext>){
-
-    let expense = {
-        name: 'name',
-        value: 'value'
-    }
-
-    const stepOneHandler = new Composer<MyContext>()
-    const stepTwoHandler = new Composer<MyContext>()
-    const stepThreeHandler = new Composer<MyContext>()
+    const stepOneHandler = new Composer<MovementContext>()
+    const stepTwoHandler = new Composer<MovementContext>()
+    const stepThreeHandler = new Composer<MovementContext>()
     
     stepOneHandler.command('gasto', async (ctx) => {
-        ctx.scene.session.myWizardSessionProp = Math.floor(10 * Math.random()) + 10
+        ctx.scene.session.movementWizardSessionProp = Math.floor(10 * Math.random()) + 10
         await ctx.reply('Por favor ingrese el nombre de su gasto')
         return ctx.wizard.next()
     })
 
     stepTwoHandler.use(async (ctx) => {
+        // @ts-ignore
         expense.name = ctx.message.text
         ctx.replyWithMarkdown('Ingrese el valor del gasto')
         return ctx.wizard.next()
@@ -45,6 +28,7 @@ export function setupMovements(bot: Telegraf<MyContext>){
         let sheet = sheetSrv.sheetsByIndex[0];
         await sheet.loadHeaderRow()
 
+        // @ts-ignore
         expense.value = ctx.message.text
 
         sheet.addRow({
@@ -65,11 +49,11 @@ export function setupMovements(bot: Telegraf<MyContext>){
       stepThreeHandler
     )
 
-    const stage = new Scenes.Stage<MyContext>([superWizard], {default: 'super-wizard'})
+    const stage = new Scenes.Stage<MovementContext>([superWizard], {default: 'super-wizard'})
     bot.use(session())
     bot.use((ctx, next) => {
     const now = new Date()
-    ctx.myContextProp = now.toString()
+    ctx.movementContextProp = now.toString()
     return next()
     })
     bot.use(stage.middleware())

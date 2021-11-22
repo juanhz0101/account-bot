@@ -2,7 +2,6 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 
 export async function sheetService(){
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
-    //doc.useServiceAccountAuth(credentials);
     let accountEmail :string = process.env.GOOGLE_ACCOUNT ?? 'abcde'
     let privateKey :string = process.env.GOOGLE_PRIVATE_KEY ?? 'xxxxx'
     
