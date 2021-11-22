@@ -1,5 +1,7 @@
+import { format } from 'date-fns'
 import { Composer, Scenes, session, Telegraf } from 'telegraf'
 import { MovementContext } from '../interfaces/movements'
+import { getDate } from '../utils/dates'
 import { sheetService }  from '../utils/sheets/index'
 
 export function setupMovements(bot: Telegraf<MovementContext>){
@@ -27,11 +29,14 @@ export function setupMovements(bot: Telegraf<MovementContext>){
         const sheetSrv = await sheetService()
         let sheet = sheetSrv.sheetsByIndex[0];
         await sheet.loadHeaderRow()
-
         // @ts-ignore
         expense.value = ctx.message.text
 
+
+        
         sheet.addRow({
+            Fecha: getDate().date,
+            Hora: getDate().hour,
             Concepto: expense.name,
             Tipo: 'Gasto',
             Valor: expense.value
