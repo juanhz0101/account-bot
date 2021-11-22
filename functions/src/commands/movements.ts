@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import { Composer, Scenes, session, Telegraf } from 'telegraf'
 import { MovementContext } from '../interfaces/movements'
 import { getDate } from '../utils/dates'
@@ -32,8 +31,6 @@ export function setupMovements(bot: Telegraf<MovementContext>){
         // @ts-ignore
         expense.value = ctx.message.text
 
-
-        
         sheet.addRow({
             Fecha: getDate().date,
             Hora: getDate().hour,
